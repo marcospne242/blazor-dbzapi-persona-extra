@@ -1,0 +1,35 @@
+﻿@page "/"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>BlazorDragonBallApi</h3>
+
+<input @bind="characterId" placeholder="Digite o ID do personagem" />
+<button @onclick="GetCharacter">Buscar</button>
+
+@if (character != null)
+{
+    <h4>Informações do Personagem</h4>
+    <img src="@character.Image" alt="@character.Name" style="width:200px;" />
+    <p><strong>Nome:</strong> @character.Name</p>
+    <p><strong>Planeta de Origem:</strong> @character.OriginPlanet.Name</p>
+    
+    <p><strong>Transformações:</strong></p>
+    <ul>
+        @foreach (var t in character.Transformations)
+        {
+            <li>@t.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    private string characterId;
+    private Character character;
+
+    private async Task GetCharacter()
+    {
+        // A API usa https://dragonball-api.com/api/characters/{id}
+        character = await Http.GetFromJsonAsync<Character>($"https://dragonball-api.com/api/characters/{characterId}");
+    }
+}
